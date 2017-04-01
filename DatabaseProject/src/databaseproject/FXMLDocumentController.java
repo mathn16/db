@@ -35,6 +35,12 @@ public class FXMLDocumentController implements Initializable{
     private int[] listOfMinimumStock = new int[30];
     private int[] listOfPrefStock = new int[30];
     private String[] listOfSpcfcNames = new String [6];
+    private double[] listOfBusspeed = new double[6];
+    private String[] listOfRamType = new String[6];
+    private double[] listOfSpcfPrice = new double[6];
+    private String[] listOfSocket = new String[6];
+    private boolean[] listOfGrphics = new boolean[6];
+    private String[] listOfFormFactors = new String[6];
         
     
     
@@ -223,12 +229,42 @@ public class FXMLDocumentController implements Initializable{
     @FXML
     void showDetails(ActionEvent event) {
         detailsNameTA.clear();
+        detailsBusSTA.clear();
+        detailsSocket.clear();
+        detailsRAMTA.clear();
+        detailsFormTA.clear();
+        detailsMBGraphics.clear();
+        detailsPriceTA.clear();
+        
         if(detailsRAMBtn.isSelected()){
             String ramNames = "";
             listOfSpcfcNames = dbProject.getSpecificComponentName(con, "ram");
             for (int i = 0; i < listOfSpcfcNames.length; i++) {
                 ramNames +=  listOfSpcfcNames[i] + "\n";
             }detailsNameTA.setText(ramNames);
+            
+            String ramBSpeed = "";
+            listOfBusspeed = dbProject.getSpecificComponentBusSpeed(con, "ram");
+            for (int i = 0; i < listOfBusspeed.length; i++) {
+                ramBSpeed +=  listOfBusspeed[i] + " MHz\n";
+            }detailsBusSTA.setText(ramBSpeed);
+            
+            String ramType = "";
+            listOfRamType = dbProject.getSpecificRamType(con, "ram");
+            for (int i = 0; i < listOfRamType.length; i++) {
+                ramType +=  listOfRamType[i] + "\n";
+            }detailsRAMTA.setText(ramType);
+            
+            String prices = "";
+            listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "ram");
+            for(int i = 0; i < listOfSpcfPrice.length; i++){
+                prices += listOfSpcfPrice[i] + "\n";
+            }detailsPriceTA.setText(prices);
+            
+            detailsSocket.setText("N/A");
+            detailsFormTA.setText("N/A");
+            detailsMBGraphics.setText("N/A");
+            
             
         }else if(detailsCPUbtn.isSelected()){
             String _CPUNames = "";
@@ -237,6 +273,28 @@ public class FXMLDocumentController implements Initializable{
                 _CPUNames +=  listOfSpcfcNames[i] + "\n";
             }detailsNameTA.setText(_CPUNames);
             
+            String prices = "";
+            listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "cpu");
+            for(int i = 0; i < listOfSpcfPrice.length; i++){
+                prices += listOfSpcfPrice[i] + "\n";
+            }detailsPriceTA.setText(prices);
+            
+            String cpuBSpeed = "";
+            listOfBusspeed = dbProject.getSpecificComponentBusSpeed(con, "cpu");
+            for (int i = 0; i < listOfBusspeed.length; i++) {
+                cpuBSpeed +=  listOfBusspeed[i] + " GHz\n";
+            }detailsBusSTA.setText(cpuBSpeed);
+            
+            String socket = "";
+            listOfSocket = dbProject.getSpecificSocket(con, "cpu");
+            for (int i = 0; i < listOfSocket.length; i++) {
+                socket +=  listOfSocket[i] + "\n";
+            }detailsSocket.setText(socket);
+            
+            detailsFormTA.setText("N/A");
+            detailsMBGraphics.setText("N/A");
+            detailsRAMTA.setText("N/A");
+            
         }else if(detailsMBbtn.isSelected()){
             String mainboardNames = "";
             listOfSpcfcNames = dbProject.getSpecificComponentName(con, "mainboard");
@@ -244,12 +302,65 @@ public class FXMLDocumentController implements Initializable{
                 mainboardNames +=  listOfSpcfcNames[i] + "\n";
             }detailsNameTA.setText(mainboardNames);
             
+            String socket = "";
+            listOfSocket = dbProject.getSpecificSocket(con, "mainboard");
+            for (int i = 0; i < listOfSocket.length; i++) {
+                socket +=  listOfSocket[i] + "\n";
+            }detailsSocket.setText(socket);
+            
+            String ramType = "";
+            listOfRamType = dbProject.getSpecificRamType(con, "mainboard");
+            for (int i = 0; i < listOfRamType.length; i++) {
+                ramType +=  listOfRamType[i] + "\n";
+            }detailsRAMTA.setText(ramType);
+            
+            String prices = "";
+            listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "mainboard");
+            for(int i = 0; i < listOfSpcfPrice.length; i++){
+                prices += listOfSpcfPrice[i] + "\n";
+            }detailsPriceTA.setText(prices);
+            
+            String onBGrphcs = "";
+            listOfGrphics = dbProject.getMBGraphics(con, "mainboard");
+            for(int i = 0; i < listOfGrphics.length; i++){
+                if(listOfGrphics[i] == true){
+                    onBGrphcs += "yes\n";
+                }else if(listOfGrphics[i] == false){
+                    onBGrphcs += "no\n";
+                }
+            }detailsMBGraphics.setText(onBGrphcs);
+            
+            String formFactor = "";
+            listOfFormFactors = dbProject.getSpecificFormFactor(con, "mainboard");
+            for(int i = 0; i < listOfFormFactors.length; i++){
+                formFactor += listOfFormFactors[i] + "\n";
+            }detailsFormTA.setText(formFactor);
+            
+            detailsBusSTA.setText("N/A");
+            
         }else if(detailsGcBtn.isSelected()){
-            String craphicsCardNames = "";
+            String graphicsCardNames = "";
             listOfSpcfcNames = dbProject.getSpecificComponentName(con, "graphicscard");
             for (int i = 0; i < listOfSpcfcNames.length; i++) {
-                craphicsCardNames +=  listOfSpcfcNames[i] + "\n";
-            }detailsNameTA.setText(craphicsCardNames);
+                graphicsCardNames +=  listOfSpcfcNames[i] + "\n";
+            }detailsNameTA.setText(graphicsCardNames);
+            
+            String grphcsBusSpeed = "";
+            listOfBusspeed = dbProject.getSpecificComponentBusSpeed(con, "graphicscard");
+            for (int i = 0; i < listOfBusspeed.length; i++) {
+                grphcsBusSpeed +=  listOfBusspeed[i] + " GB\n";
+            }detailsBusSTA.setText(grphcsBusSpeed);
+            
+            String prices = "";
+            listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "graphicscard");
+            for(int i = 0; i < listOfSpcfPrice.length; i++){
+                prices += listOfSpcfPrice[i] + "\n";
+            }detailsPriceTA.setText(prices);
+            
+            detailsFormTA.setText("N/A");
+            detailsMBGraphics.setText("N/A");
+            detailsRAMTA.setText("N/A");
+            detailsSocket.setText("N/A");
             
         }else if(detailsCcasebtn.isSelected()){
             String caseNames = "";
@@ -257,6 +368,23 @@ public class FXMLDocumentController implements Initializable{
             for (int i = 0; i < listOfSpcfcNames.length; i++) {
                 caseNames +=  listOfSpcfcNames[i] + "\n";
             }detailsNameTA.setText(caseNames);
+            
+            String prices = "";
+            listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "computercase");
+            for(int i = 0; i < listOfSpcfPrice.length; i++){
+                prices += listOfSpcfPrice[i] + "\n";
+            }detailsPriceTA.setText(prices);
+            
+            String formFactor = "";
+            listOfFormFactors = dbProject.getSpecificFormFactor(con, "mainboard");
+            for(int i = 0; i < listOfFormFactors.length; i++){
+                formFactor += listOfFormFactors[i] + "\n";
+            }detailsFormTA.setText(formFactor);
+            
+            detailsMBGraphics.setText("N/A");
+            detailsRAMTA.setText("N/A");
+            detailsSocket.setText("N/A");
+            detailsBusSTA.setText("N/A");
         }
-    }
+    }               //done
 }

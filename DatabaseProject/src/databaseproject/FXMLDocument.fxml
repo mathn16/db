@@ -9,7 +9,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="databaseproject.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="databaseproject.FXMLDocumentController">
    <children>
       <TabPane prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -42,14 +42,14 @@
                         <Label fx:id="stockPageLabel1" layoutX="14.0" layoutY="14.0" text="Details of components" />
                         <TextArea fx:id="detailsNameTA" layoutY="71.0" prefHeight="500.0" prefWidth="140.0" />
                         <Button fx:id="detailsButton" layoutX="196.0" layoutY="10.0" mnemonicParsing="false" onAction="#showDetails" text="Fetch" />
-                        <TextArea fx:id="detailsSocket" layoutX="140.0" layoutY="70.0" prefHeight="500.0" prefWidth="110.0" />
+                        <TextArea fx:id="detailsBusSTA" layoutX="140.0" layoutY="70.0" prefHeight="500.0" prefWidth="110.0" />
                         <TextArea fx:id="detailsRAMTA" layoutX="360.0" layoutY="71.0" prefHeight="500.0" prefWidth="110.0" />
                         <TextArea fx:id="detailsFormTA" layoutX="470.0" layoutY="71.0" prefHeight="500.0" prefWidth="110.0" />
                         <Label layoutY="48.0" text="Name:" />
                         <Label layoutX="250.0" layoutY="48.0" text="Socket:" />
                         <Label layoutX="360.0" layoutY="48.0" text="Ramtype:" />
                         <Label layoutX="470.0" layoutY="48.0" text="Formfactor:" />
-                        <TextArea fx:id="detailsBusSTA" layoutX="250.0" layoutY="71.0" prefHeight="500.0" prefWidth="110.0" />
+                        <TextArea fx:id="detailsSocket" layoutX="250.0" layoutY="71.0" prefHeight="500.0" prefWidth="110.0" />
                         <Label layoutX="140.0" layoutY="48.0" text="Bus Speed:" />
                         <RadioButton fx:id="detailsRAMBtn" layoutX="280.0" layoutY="14.0" mnemonicParsing="false" onAction="#selectKind" text="RAM">
                            <toggleGroup>
@@ -73,7 +73,7 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Label fx:id="sysInStockLabel" layoutX="14.0" layoutY="14.0" text="Systems in stock:" />
-                        <TextArea fx:id="sysInStockPageTA" layoutY="31.0" prefHeight="544.0" prefWidth="800.0" />
+                        <TextArea fx:id="sysInStockPageTA" layoutY="71.0" prefHeight="500.0" prefWidth="800.0" />
                         <Button fx:id="sysInStockButton" layoutX="126.0" layoutY="10.0" mnemonicParsing="false" onAction="#fetchSysInStock" text="Fetch" />
                      </children>
                   </AnchorPane>
@@ -84,7 +84,7 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Label fx:id="priceListLabel" layoutX="14.0" layoutY="14.0" text="Price list of components and systems:" />
-                        <TextArea fx:id="priceListPageTA" layoutY="31.0" prefHeight="544.0" prefWidth="800.0" />
+                        <TextArea fx:id="priceListPageTA" layoutY="71.0" prefHeight="500.0" prefWidth="800.0" />
                         <Button fx:id="priceListButton" layoutX="231.0" layoutY="10.0" mnemonicParsing="false" onAction="#fetchPriceList" text="Fetch" />
                      </children>
                   </AnchorPane>
@@ -95,7 +95,7 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Label fx:id="salesPageLabel" layoutX="14.0" layoutY="14.0" text="Sales made:" />
-                        <TextArea fx:id="salesPageTA" layoutY="31.0" prefHeight="544.0" prefWidth="800.0" />
+                        <TextArea fx:id="salesPageTA" layoutY="71.0" prefHeight="500.0" prefWidth="800.0" />
                         <Button fx:id="salePageButton" layoutX="138.0" layoutY="10.0" mnemonicParsing="false" onAction="#fetchSales" text="Fetch" />
                      </children>
                   </AnchorPane>

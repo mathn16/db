@@ -29,6 +29,12 @@ public class DatabaseProject extends Application {
     private int[] listOfMinStock = new int[30];
     private int[] listOfPrefStock = new int[30];
     private String[] detListOfNames = new String[6];
+    private double[] specificBuSpeed = new double[6];
+    private String[] ramTypeList = new String[6];
+    private double[] spcfPrice = new double[6];
+    private String[] spcfSocket = new String[6];
+    private boolean[] spcfMbGrphcs = new boolean[6];
+    private String[] spcfFormFactor = new String[6];
     
     @Override
     public void start(Stage stage) throws Exception {
@@ -69,6 +75,96 @@ public class DatabaseProject extends Application {
         } catch (SQLException e) {
             e.printStackTrace();
         }return detListOfNames;
+    }
+    public double[] getSpecificComponentBusSpeed(Connection con, String type){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select busspeed from " + type + " as busspeed";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            while (rs.next()) {
+                double scpfComponentBusSpeed = rs.getDouble("busspeed");
+                specificBuSpeed[i] = scpfComponentBusSpeed;
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return specificBuSpeed;
+    }
+    public String[] getSpecificRamType(Connection con, String type){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select ramtype from " + type + " as ramtype";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            while (rs.next()) {
+                String scpfRamType = rs.getString("ramtype");
+                ramTypeList[i] = scpfRamType;
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return ramTypeList;
+    }
+    public double[] getSpecificComponentPrice(Connection con, String type){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select price from component where kind='"+type+"'";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            while (rs.next()) {
+                double scpfComponentPrice = rs.getDouble("price");
+                spcfPrice[i] = scpfComponentPrice;
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return spcfPrice;
+    }
+    public String[] getSpecificSocket(Connection con, String type){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select cpusocket from " + type + " as cpusocket";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            while (rs.next()) {
+                String scpfSocket = rs.getString("cpusocket");
+                spcfSocket[i] = scpfSocket;
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return spcfSocket;
+    }
+    public boolean[] getMBGraphics(Connection con, String type){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select onboardgraphics from " + type + " as onboardgraphics";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            while (rs.next()) {
+                boolean onBGrphcs = rs.getBoolean("onboardgraphics");
+                spcfMbGrphcs[i] = onBGrphcs;
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return spcfMbGrphcs;
+    }
+    public String[] getSpecificFormFactor(Connection con, String type){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select formfactor from " + type + " as formfactor";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            while (rs.next()) {
+                String formFactor = rs.getString("formfactor");
+                spcfFormFactor[i] = formFactor;
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return spcfFormFactor;
     }
     public String[] getComponentKind(Connection con){
         try {
