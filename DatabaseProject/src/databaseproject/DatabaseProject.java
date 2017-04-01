@@ -241,6 +241,7 @@ public class DatabaseProject extends Application {
             e.printStackTrace();
         }return listOfPrefStock;
     }
+    
 
     /**
      * @param args the command line arguments
