@@ -4,6 +4,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +42,9 @@ public class FXMLDocumentController implements Initializable{
     private String[] listOfSocket = new String[6];
     private boolean[] listOfGrphics = new boolean[6];
     private String[] listOfFormFactors = new String[6];
+    private ArrayList<String> listOfSystems = new ArrayList<>();
+    private ArrayList<String> listOfSysComponents = new ArrayList<>();
+    private ArrayList<Integer> sysChecker = new ArrayList<>();
         
     
     
@@ -53,7 +57,7 @@ public class FXMLDocumentController implements Initializable{
         stockPagePref.setEditable(false);
         stockPageKind.setEditable(false);
         sysInStockPageTA.setEditable(false);
-        priceListPageTA.setEditable(false);
+        sysInStockPageTA1.setEditable(false);
         salesPageTA.setEditable(false);
         
 
@@ -77,6 +81,9 @@ public class FXMLDocumentController implements Initializable{
     
     @FXML
     private Label stockPageLabel;
+    
+    @FXML
+    private Label sysInStockLabel1;
 
     @FXML
     private TextArea stockPageName;
@@ -149,18 +156,12 @@ public class FXMLDocumentController implements Initializable{
 
     @FXML
     private TextArea sysInStockPageTA;
+    
+    @FXML
+    private TextArea sysInStockPageTA1;
 
     @FXML
     private Button sysInStockButton;
-
-    @FXML
-    private Label priceListLabel;
-
-    @FXML
-    private TextArea priceListPageTA;
-
-    @FXML
-    private Button priceListButton;
 
     @FXML
     private Label salesPageLabel;
@@ -207,18 +208,36 @@ public class FXMLDocumentController implements Initializable{
     }
 
     @FXML
-    void fetchPriceList(ActionEvent event) {
-
-    }
-
-    @FXML
     void fetchSales(ActionEvent event) {
 
     }
 
     @FXML
     void fetchSysInStock(ActionEvent event) {
-
+        sysInStockPageTA.clear();
+        sysInStockPageTA1.clear();
+        
+        String sysInStock = "";
+        listOfSystems = dbProject.getSystemsInStock(con);
+        for(String s : listOfSystems){
+            listOfSysComponents = dbProject.getSystemComponents(con, s);
+            sysInStock += s +" (";
+            for(String p : listOfSysComponents){
+                sysInStock += p + ", ";
+            }
+            sysInStock += ")\n";
+        }sysInStockPageTA.setText(sysInStock);
+        String amountOfSys = "";
+        for (String i : listOfSystems) {
+            int temp = 50;
+            listOfSysComponents = dbProject.getSystemComponents(con, i);
+            for(int p = 0; p<listOfSysComponents.size(); p++){
+                if(dbProject.getComponentStock(con, listOfSysComponents.get(p)) < temp){
+                    temp = dbProject.getComponentStock(con, listOfSysComponents.get(p));
+                }
+            }
+            amountOfSys += temp + "\n";
+        }sysInStockPageTA1.setText(amountOfSys);
     }
 
     @FXML

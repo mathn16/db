@@ -35,6 +35,9 @@ public class DatabaseProject extends Application {
     private String[] spcfSocket = new String[6];
     private boolean[] spcfMbGrphcs = new boolean[6];
     private String[] spcfFormFactor = new String[6];
+    private ArrayList<String> listOfSystemsInStock = new ArrayList<>();
+    private ArrayList<String> listOfSysComponents = new ArrayList<>();
+    private int[] amountOfSys = new int[8];
     
     @Override
     public void start(Stage stage) throws Exception {
@@ -241,8 +244,70 @@ public class DatabaseProject extends Application {
             e.printStackTrace();
         }return listOfPrefStock;
     }
-    
-
+    public ArrayList<String> getSystemsInStock(Connection con){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select systemname from computersystem as systemname";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            while (rs.next()) {
+                String sysIntStock = rs.getString("systemname");
+                listOfSystemsInStock.add(i, sysIntStock);
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return listOfSystemsInStock;
+    }
+    public ArrayList<String> getSystemComponents(Connection con, String sysName){
+        try {
+            listOfSysComponents.clear();
+            Statement st = con.createStatement();
+            String queri = "select componentname as componentname from contains where computersystemname ='"+sysName+"'";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            while (rs.next()) {
+                String sysComponents = rs.getString("componentname");
+                listOfSysComponents.add(i, sysComponents);
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return listOfSysComponents;
+    }
+    public int[] getAmountOfSystems(Connection con, String sysName){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select componentname as componentname from contains where computersystemname ='"+sysName+"'";
+            ResultSet rs = st.executeQuery(queri);
+            int i=0;
+            int minStock = 0;
+            while (rs.next()) {
+                String componentName = rs.getString("componentname");
+                listOfSysComponents.add(i, componentName);
+                for(int n = 0; n <listOfSysComponents.size(); n++){
+                    
+                }
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return amountOfSys;
+    }
+    public int getComponentStock(Connection con, String compName){
+        int i = 0;
+        try {
+            Statement st = con.createStatement();
+            String queri = "select stock as stock from component where name ='"+ compName +"'";
+            ResultSet rs = st.executeQuery(queri);
+            while (rs.next()) {
+                int currentStock = rs.getInt("stock");
+                i = currentStock;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return i;
+    }
     /**
      * @param args the command line arguments
      */
