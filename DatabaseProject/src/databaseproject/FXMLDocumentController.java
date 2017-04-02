@@ -22,31 +22,33 @@ public class FXMLDocumentController implements Initializable{
     private Connection con;
     private DatabaseProject dbProject = new DatabaseProject();;
     
-    private String nameOfComponents = "";
-    private String kindOfComponents = "";
-    private String priceOfComponents = "";
-    private String currentStockOfComponents = "";
-    private String minStockOfComponents = "";
-    private String prefStockOfComponents = "";
+    private String nameOfComponents;
+    private String kindOfComponents;
+    private String priceOfComponents;
+    private String currentStockOfComponents;
+    private String minStockOfComponents;
+    private String prefStockOfComponents;
     
-    private String[] listOfNames = new String[30];
-    private String[] listOfKinds = new String[30];
-    private double[] listOfPrices = new double[30];
-    private int[] listOfCurrentStock = new int[30];
-    private int[] listOfMinimumStock = new int[30];
-    private int[] listOfPrefStock = new int[30];
-    private String[] listOfSpcfcNames = new String [6];
-    private double[] listOfBusspeed = new double[6];
-    private String[] listOfRamType = new String[6];
-    private double[] listOfSpcfPrice = new double[6];
-    private String[] listOfSocket = new String[6];
-    private boolean[] listOfGrphics = new boolean[6];
-    private String[] listOfFormFactors = new String[6];
+    private ArrayList<String> listOfNames = new ArrayList<>();
+    private ArrayList<String> listOfKinds = new ArrayList<>();
+    private ArrayList<Double> listOfPrices = new ArrayList<>();
+    private ArrayList<Integer> listOfCurrentStock = new ArrayList<>();
+    private ArrayList<Integer> listOfMinimumStock = new ArrayList<>();
+    private ArrayList<Integer> listOfPrefStock = new ArrayList<>();
+    private ArrayList<String> listOfSpcfcNames = new ArrayList<>();
+    private ArrayList<Double> listOfBusspeed = new ArrayList<>();
+    private ArrayList<String> listOfRamType = new ArrayList<>();
+    private ArrayList<Double> listOfSpcfPrice = new ArrayList<>();
+    private ArrayList<String> listOfSocket = new ArrayList<>();
+    private ArrayList<Boolean> listOfGrphics = new ArrayList<>();
+    private ArrayList<String> listOfFormFactors = new ArrayList<>();
     private ArrayList<String> listOfSystems = new ArrayList<>();
     private ArrayList<String> listOfSysComponents = new ArrayList<>();
     private ArrayList<Integer> sysChecker = new ArrayList<>();
     private ArrayList<String> listOfSystemsPurchase = new ArrayList<>();
     private ArrayList<String> listOfSystemNamesPurchase = new ArrayList<>();
+    private ArrayList<String> listOfSysComponentsPurchase = new ArrayList<>();
+    private ArrayList<String> listOfSysPrice = new ArrayList<>();
         
     
     
@@ -168,35 +170,46 @@ public class FXMLDocumentController implements Initializable{
     
     @FXML
     void fetchComponentsInStock(ActionEvent event) {
+        listOfNames.clear();
+        listOfPrices.clear();
+        listOfCurrentStock.clear();
+        listOfMinimumStock.clear();
+        
+        nameOfComponents = "";
+        priceOfComponents = "";
+        currentStockOfComponents = "";
+        minStockOfComponents = "";
+        prefStockOfComponents = "";
+        kindOfComponents = "";
         
         listOfNames = dbProject.getComponentName(con);
-        for(int i = 0; i < listOfNames.length; i++){
-            nameOfComponents += listOfNames[i] + "\n";
+        for(int i = 0; i < listOfNames.size(); i++){
+            nameOfComponents += listOfNames.get(i) + "\n";
         }stockPageName.setText(nameOfComponents);
         
         listOfPrices = dbProject.getComponentPrice(con);
-        for(int i = 0; i < listOfPrices.length; i++){
-            priceOfComponents += listOfPrices[i] + "\n";
+        for(int i = 0; i < listOfPrices.size(); i++){
+            priceOfComponents += listOfPrices.get(i) + "\n";
         }stockPagePrice.setText(priceOfComponents);
         
         listOfCurrentStock = dbProject.getComponentStock(con);
-        for(int i = 0; i < listOfCurrentStock.length; i++){
-            currentStockOfComponents += listOfCurrentStock[i] + "\n";
+        for(int i = 0; i < listOfCurrentStock.size(); i++){
+            currentStockOfComponents += listOfCurrentStock.get(i) + "\n";
         }stockPageStock.setText(currentStockOfComponents);
         
         listOfMinimumStock = dbProject.getComponentMinStock(con);
-        for(int i = 0; i < listOfMinimumStock.length; i++){
-            minStockOfComponents += listOfMinimumStock[i] + "\n";
+        for(int i = 0; i < listOfMinimumStock.size(); i++){
+            minStockOfComponents += listOfMinimumStock.get(i) + "\n";
         }stockPageMin.setText(minStockOfComponents);
         
         listOfPrefStock = dbProject.getComponentPrefStock(con);
-        for(int i = 0; i < listOfPrefStock.length; i++){
-            prefStockOfComponents += listOfPrefStock[i] + "\n";
+        for(int i = 0; i < listOfPrefStock.size(); i++){
+            prefStockOfComponents += listOfPrefStock.get(i) + "\n";
         }stockPagePref.setText(prefStockOfComponents);
         
         listOfKinds = dbProject.getComponentKind(con);
-        for(int i = 0; i < listOfKinds.length; i++){
-            kindOfComponents += listOfKinds[i] + "\n";
+        for(int i = 0; i < listOfKinds.size(); i++){
+            kindOfComponents += listOfKinds.get(i) + "\n";
         }stockPageKind.setText(kindOfComponents);
     }
 
@@ -209,15 +222,33 @@ public class FXMLDocumentController implements Initializable{
         }salesPageTA.setText(sysInStock);
         
         String amountsInStock = "";
-        listOfSystemNamesPurchase = dbProject.getSystemsInStock(con);
-        for(String s : listOfSystemNamesPurchase)
-            dbProject.getAmountOfSystems(con, s)
+        for(String s : listOfSystemsPurchase){
+            int temp = 50;
+            listOfSysComponentsPurchase = dbProject.getSystemComponents(con, s);
+            for(int p = 0; p < listOfSysComponentsPurchase.size(); p++){
+                if(dbProject.getComponentStock(con, listOfSysComponentsPurchase.get(p)) < temp){
+                    temp = dbProject.getComponentStock(con, listOfSysComponentsPurchase.get(p));
+                }
+            }amountsInStock += temp + "\n";
+        }salesPageQuantityTA.setText(amountsInStock);
+        
+        String priceForLot = "";
+        for(String l : listOfSystemsPurchase){
+            double priceOfSystem = 0.0;
+            listOfSysPrice = dbProject.getSystemComponents(con, l);
+            for(String p : listOfSysPrice){
+                priceOfSystem += dbProject.getSystemPrice(con, p);
+            }priceForLot += (int)(priceOfSystem*1.3/100) + "95" + "\n";
+        }salesPagePriceTA.setText(priceForLot);
     }
 
     @FXML
     void fetchSysInStock(ActionEvent event) {
         sysInStockPageTA.clear();
         sysInStockPageTA1.clear();
+        
+        listOfSystems.clear();
+        listOfSysComponents.clear();
         
         String sysInStock = "";
         listOfSystems = dbProject.getSystemsInStock(con);
@@ -257,29 +288,35 @@ public class FXMLDocumentController implements Initializable{
         detailsMBGraphics.clear();
         detailsPriceTA.clear();
         
+        listOfSpcfcNames.clear();
+        listOfBusspeed.clear();
+        listOfRamType.clear();
+        listOfSpcfPrice.clear();
+        listOfSocket.clear();
+        
         if(detailsRAMBtn.isSelected()){
             String ramNames = "";
             listOfSpcfcNames = dbProject.getSpecificComponentName(con, "ram");
-            for (int i = 0; i < listOfSpcfcNames.length; i++) {
-                ramNames +=  listOfSpcfcNames[i] + "\n";
+            for (int i = 0; i < listOfSpcfcNames.size(); i++) {
+                ramNames +=  listOfSpcfcNames.get(i) + "\n";
             }detailsNameTA.setText(ramNames);
             
             String ramBSpeed = "";
             listOfBusspeed = dbProject.getSpecificComponentBusSpeed(con, "ram");
-            for (int i = 0; i < listOfBusspeed.length; i++) {
-                ramBSpeed +=  listOfBusspeed[i] + " MHz\n";
+            for (int i = 0; i < listOfBusspeed.size(); i++) {
+                ramBSpeed +=  listOfBusspeed.get(i) + " MHz\n";
             }detailsBusSTA.setText(ramBSpeed);
             
             String ramType = "";
             listOfRamType = dbProject.getSpecificRamType(con, "ram");
-            for (int i = 0; i < listOfRamType.length; i++) {
-                ramType +=  listOfRamType[i] + "\n";
+            for (int i = 0; i < listOfRamType.size(); i++) {
+                ramType +=  listOfRamType.get(i) + "\n";
             }detailsRAMTA.setText(ramType);
             
             String prices = "";
             listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "ram");
-            for(int i = 0; i < listOfSpcfPrice.length; i++){
-                prices += listOfSpcfPrice[i] + "\n";
+            for(int i = 0; i < listOfSpcfPrice.size(); i++){
+                prices += listOfSpcfPrice.get(i) + "\n";
             }detailsPriceTA.setText(prices);
             
             detailsSocket.setText("N/A");
@@ -290,26 +327,26 @@ public class FXMLDocumentController implements Initializable{
         }else if(detailsCPUbtn.isSelected()){
             String _CPUNames = "";
             listOfSpcfcNames = dbProject.getSpecificComponentName(con, "cpu");
-            for (int i = 0; i < listOfSpcfcNames.length; i++) {
-                _CPUNames +=  listOfSpcfcNames[i] + "\n";
+            for (int i = 0; i < listOfSpcfcNames.size(); i++) {
+                _CPUNames +=  listOfSpcfcNames.get(i) + "\n";
             }detailsNameTA.setText(_CPUNames);
             
             String prices = "";
             listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "cpu");
-            for(int i = 0; i < listOfSpcfPrice.length; i++){
-                prices += listOfSpcfPrice[i] + "\n";
+            for(int i = 0; i < listOfSpcfPrice.size(); i++){
+                prices += listOfSpcfPrice.get(i) + "\n";
             }detailsPriceTA.setText(prices);
             
             String cpuBSpeed = "";
             listOfBusspeed = dbProject.getSpecificComponentBusSpeed(con, "cpu");
-            for (int i = 0; i < listOfBusspeed.length; i++) {
-                cpuBSpeed +=  listOfBusspeed[i] + " GHz\n";
+            for (int i = 0; i < listOfBusspeed.size(); i++) {
+                cpuBSpeed +=  listOfBusspeed.get(i) + " GHz\n";
             }detailsBusSTA.setText(cpuBSpeed);
             
             String socket = "";
             listOfSocket = dbProject.getSpecificSocket(con, "cpu");
-            for (int i = 0; i < listOfSocket.length; i++) {
-                socket +=  listOfSocket[i] + "\n";
+            for (int i = 0; i < listOfSocket.size(); i++) {
+                socket +=  listOfSocket.get(i) + "\n";
             }detailsSocket.setText(socket);
             
             detailsFormTA.setText("N/A");
@@ -319,42 +356,42 @@ public class FXMLDocumentController implements Initializable{
         }else if(detailsMBbtn.isSelected()){
             String mainboardNames = "";
             listOfSpcfcNames = dbProject.getSpecificComponentName(con, "mainboard");
-            for (int i = 0; i < listOfSpcfcNames.length; i++) {
-                mainboardNames +=  listOfSpcfcNames[i] + "\n";
+            for (int i = 0; i < listOfSpcfcNames.size(); i++) {
+                mainboardNames +=  listOfSpcfcNames.get(i) + "\n";
             }detailsNameTA.setText(mainboardNames);
             
             String socket = "";
             listOfSocket = dbProject.getSpecificSocket(con, "mainboard");
-            for (int i = 0; i < listOfSocket.length; i++) {
-                socket +=  listOfSocket[i] + "\n";
+            for (int i = 0; i < listOfSocket.size(); i++) {
+                socket +=  listOfSocket.get(i) + "\n";
             }detailsSocket.setText(socket);
             
             String ramType = "";
             listOfRamType = dbProject.getSpecificRamType(con, "mainboard");
-            for (int i = 0; i < listOfRamType.length; i++) {
-                ramType +=  listOfRamType[i] + "\n";
+            for (int i = 0; i < listOfRamType.size(); i++) {
+                ramType +=  listOfRamType.get(i) + "\n";
             }detailsRAMTA.setText(ramType);
             
             String prices = "";
             listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "mainboard");
-            for(int i = 0; i < listOfSpcfPrice.length; i++){
-                prices += listOfSpcfPrice[i] + "\n";
+            for(int i = 0; i < listOfSpcfPrice.size(); i++){
+                prices += listOfSpcfPrice.get(i) + "\n";
             }detailsPriceTA.setText(prices);
             
             String onBGrphcs = "";
             listOfGrphics = dbProject.getMBGraphics(con, "mainboard");
-            for(int i = 0; i < listOfGrphics.length; i++){
-                if(listOfGrphics[i] == true){
+            for(int i = 0; i < listOfGrphics.size(); i++){
+                if(listOfGrphics.get(i) == true){
                     onBGrphcs += "yes\n";
-                }else if(listOfGrphics[i] == false){
+                }else if(listOfGrphics.get(i) != true){
                     onBGrphcs += "no\n";
                 }
             }detailsMBGraphics.setText(onBGrphcs);
             
             String formFactor = "";
             listOfFormFactors = dbProject.getSpecificFormFactor(con, "mainboard");
-            for(int i = 0; i < listOfFormFactors.length; i++){
-                formFactor += listOfFormFactors[i] + "\n";
+            for(int i = 0; i < listOfFormFactors.size(); i++){
+                formFactor += listOfFormFactors.get(i) + "\n";
             }detailsFormTA.setText(formFactor);
             
             detailsBusSTA.setText("N/A");
@@ -362,20 +399,20 @@ public class FXMLDocumentController implements Initializable{
         }else if(detailsGcBtn.isSelected()){
             String graphicsCardNames = "";
             listOfSpcfcNames = dbProject.getSpecificComponentName(con, "graphicscard");
-            for (int i = 0; i < listOfSpcfcNames.length; i++) {
-                graphicsCardNames +=  listOfSpcfcNames[i] + "\n";
+            for (int i = 0; i < listOfSpcfcNames.size(); i++) {
+                graphicsCardNames +=  listOfSpcfcNames.get(i) + "\n";
             }detailsNameTA.setText(graphicsCardNames);
             
             String grphcsBusSpeed = "";
             listOfBusspeed = dbProject.getSpecificComponentBusSpeed(con, "graphicscard");
-            for (int i = 0; i < listOfBusspeed.length; i++) {
-                grphcsBusSpeed +=  listOfBusspeed[i] + " GB\n";
+            for (int i = 0; i < listOfBusspeed.size(); i++) {
+                grphcsBusSpeed +=  listOfBusspeed.get(i) + " GB\n";
             }detailsBusSTA.setText(grphcsBusSpeed);
             
             String prices = "";
             listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "graphicscard");
-            for(int i = 0; i < listOfSpcfPrice.length; i++){
-                prices += listOfSpcfPrice[i] + "\n";
+            for(int i = 0; i < listOfSpcfPrice.size(); i++){
+                prices += listOfSpcfPrice.get(i) + "\n";
             }detailsPriceTA.setText(prices);
             
             detailsFormTA.setText("N/A");
@@ -386,20 +423,20 @@ public class FXMLDocumentController implements Initializable{
         }else if(detailsCcasebtn.isSelected()){
             String caseNames = "";
             listOfSpcfcNames = dbProject.getSpecificComponentName(con, "computercase");
-            for (int i = 0; i < listOfSpcfcNames.length; i++) {
-                caseNames +=  listOfSpcfcNames[i] + "\n";
+            for (int i = 0; i < listOfSpcfcNames.size(); i++) {
+                caseNames +=  listOfSpcfcNames.get(i) + "\n";
             }detailsNameTA.setText(caseNames);
             
             String prices = "";
             listOfSpcfPrice = dbProject.getSpecificComponentPrice(con, "computercase");
-            for(int i = 0; i < listOfSpcfPrice.length; i++){
-                prices += listOfSpcfPrice[i] + "\n";
+            for(int i = 0; i < listOfSpcfPrice.size(); i++){
+                prices += listOfSpcfPrice.get(i) + "\n";
             }detailsPriceTA.setText(prices);
             
             String formFactor = "";
             listOfFormFactors = dbProject.getSpecificFormFactor(con, "mainboard");
-            for(int i = 0; i < listOfFormFactors.length; i++){
-                formFactor += listOfFormFactors[i] + "\n";
+            for(int i = 0; i < listOfFormFactors.size(); i++){
+                formFactor += listOfFormFactors.get(i) + "\n";
             }detailsFormTA.setText(formFactor);
             
             detailsMBGraphics.setText("N/A");

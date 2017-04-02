@@ -72,22 +72,26 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="sysInStockLabel" layoutX="14.0" layoutY="41.0" text="Systems in stock:" />
+                        <Label fx:id="sysInStockLabel" layoutX="14.0" layoutY="14.0" text="Systems in stock:" />
                         <TextArea fx:id="sysInStockPageTA" layoutY="71.0" prefHeight="500.0" prefWidth="582.0" />
-                        <Button fx:id="sysInStockButton" layoutX="195.0" layoutY="37.0" mnemonicParsing="false" onAction="#fetchSysInStock" text="Fetch" />
+                        <Button fx:id="sysInStockButton" layoutX="196.0" layoutY="10.0" mnemonicParsing="false" onAction="#fetchSysInStock" text="Fetch" />
                         <TextArea fx:id="sysInStockPageTA1" layoutX="582.0" layoutY="71.0" prefHeight="500.0" prefWidth="218.0" />
                         <Label fx:id="sysInStockLabel1" layoutX="582.0" layoutY="41.0" text="Quantity:" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Sales">
+            <Tab text="Purchase">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="salesPageLabel" layoutX="14.0" layoutY="14.0" text="Sales made:" />
-                        <TextArea fx:id="salesPageTA" layoutY="71.0" prefHeight="500.0" prefWidth="800.0" />
-                        <Button fx:id="salePageButton" layoutX="138.0" layoutY="10.0" mnemonicParsing="false" onAction="#fetchSales" text="Fetch" />
+                        <Label layoutX="14.0" layoutY="42.0" text="Systems:" />
+                        <TextArea fx:id="salesPageTA" layoutY="71.0" prefHeight="200.0" prefWidth="200.0" />
+                        <Button fx:id="salePageButton" layoutX="196.0" layoutY="10.0" mnemonicParsing="false" onAction="#fetchSales" text="Fetch" />
+                        <TextArea fx:id="salesPagePriceTA" layoutX="300.0" layoutY="71.0" prefHeight="200.0" prefWidth="150.0" />
+                        <TextArea fx:id="salesPageQuantityTA" layoutX="200.0" layoutY="71.0" prefHeight="200.0" prefWidth="100.0" />
+                        <Label layoutX="214.0" layoutY="42.0" text="Quantity:" />
+                        <Label layoutX="314.0" layoutY="42.0" text="Price:" />
                      </children>
                   </AnchorPane>
               </content>

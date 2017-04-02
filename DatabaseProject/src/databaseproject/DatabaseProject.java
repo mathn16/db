@@ -22,22 +22,23 @@ import javafx.stage.Stage;
  */
 public class DatabaseProject extends Application {
     
-    private String[] listOfNames = new String[30];
-    private String[] listOfKinds = new String[30];
-    private double[] listOfPrices = new double[30];
-    private int[] listOfCurrentStock = new int[30];
-    private int[] listOfMinStock = new int[30];
-    private int[] listOfPrefStock = new int[30];
-    private String[] detListOfNames = new String[6];
-    private double[] specificBuSpeed = new double[6];
-    private String[] ramTypeList = new String[6];
-    private double[] spcfPrice = new double[6];
-    private String[] spcfSocket = new String[6];
-    private boolean[] spcfMbGrphcs = new boolean[6];
-    private String[] spcfFormFactor = new String[6];
+    private ArrayList<String> listOfNames = new ArrayList<>();
+    private String[] listOfKinds = new String[31];
+    private ArrayList<Double> listOfPrices = new ArrayList<>();
+    private ArrayList<Integer> listOfCurrentStock = new ArrayList<>();
+    private ArrayList<Integer> listOfMinStock = new ArrayList<>();
+    private ArrayList<Integer> listOfPrefStock = new ArrayList<>();
+    private ArrayList<String> detListOfNames = new ArrayList<>();
+    private ArrayList<Double> specificBuSpeed = new ArrayList<>();
+    private ArrayList<String> ramTypeList = new ArrayList<>();
+    private ArrayList<Double> spcfPrice = new ArrayList<>();
+    private ArrayList<String> spcfSocket = new ArrayList<>();
+    private ArrayList<Boolean> spcfMbGrphcs = new ArrayList<>();
+    private ArrayList<String> spcfFormFactor = new ArrayList<>();
     private ArrayList<String> listOfSystemsInStock = new ArrayList<>();
     private ArrayList<String> listOfSysComponents = new ArrayList<>();
-    private int[] amountOfSys = new int[8];
+    private ArrayList<Double> listOfSystemPrices = new ArrayList<>();
+    private double _price;
     
     @Override
     public void start(Stage stage) throws Exception {
@@ -49,196 +50,184 @@ public class DatabaseProject extends Application {
         stage.show();
 
     }
-    public String[] getComponentName(Connection con){
+    
+    public ArrayList<String> getComponentName(Connection con){
         try {
+            listOfNames.clear();
             Statement st = con.createStatement();
             String queri = "select name from component as name";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 String componentName = rs.getString("name");
-                listOfNames[i] = componentName;
-                i++;
+                listOfNames.add(componentName);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return listOfNames;
     }
-    public String[] getSpecificComponentName(Connection con, String type){
+    public ArrayList<String> getSpecificComponentName(Connection con, String type){
         try {
+            detListOfNames.clear();
             Statement st = con.createStatement();
             String queri = "select name from " + type + " as name";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 String scpfComponentName = rs.getString("name");
-                detListOfNames[i] = scpfComponentName;
-                i++;
+                detListOfNames.add(scpfComponentName);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return detListOfNames;
     }
-    public double[] getSpecificComponentBusSpeed(Connection con, String type){
+    public ArrayList<Double> getSpecificComponentBusSpeed(Connection con, String type){
         try {
+            specificBuSpeed.clear();
             Statement st = con.createStatement();
             String queri = "select busspeed from " + type + " as busspeed";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 double scpfComponentBusSpeed = rs.getDouble("busspeed");
-                specificBuSpeed[i] = scpfComponentBusSpeed;
-                i++;
+                specificBuSpeed.add(scpfComponentBusSpeed);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return specificBuSpeed;
     }
-    public String[] getSpecificRamType(Connection con, String type){
+    public ArrayList<String> getSpecificRamType(Connection con, String type){
         try {
+            ramTypeList.clear();
             Statement st = con.createStatement();
             String queri = "select ramtype from " + type + " as ramtype";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 String scpfRamType = rs.getString("ramtype");
-                ramTypeList[i] = scpfRamType;
-                i++;
+                ramTypeList.add(scpfRamType);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return ramTypeList;
     }
-    public double[] getSpecificComponentPrice(Connection con, String type){
+    public ArrayList<Double> getSpecificComponentPrice(Connection con, String type){
         try {
+            spcfPrice.clear();
             Statement st = con.createStatement();
             String queri = "select price from component where kind='"+type+"'";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 double scpfComponentPrice = rs.getDouble("price");
-                spcfPrice[i] = scpfComponentPrice;
-                i++;
+                spcfPrice.add(scpfComponentPrice);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return spcfPrice;
     }
-    public String[] getSpecificSocket(Connection con, String type){
+    public ArrayList<String> getSpecificSocket(Connection con, String type){
         try {
+            spcfSocket.clear();
             Statement st = con.createStatement();
             String queri = "select cpusocket from " + type + " as cpusocket";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 String scpfSocket = rs.getString("cpusocket");
-                spcfSocket[i] = scpfSocket;
-                i++;
+                spcfSocket.add(scpfSocket);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return spcfSocket;
     }
-    public boolean[] getMBGraphics(Connection con, String type){
+    public ArrayList<Boolean> getMBGraphics(Connection con, String type){
         try {
+            spcfMbGrphcs.clear();
             Statement st = con.createStatement();
             String queri = "select onboardgraphics from " + type + " as onboardgraphics";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 boolean onBGrphcs = rs.getBoolean("onboardgraphics");
-                spcfMbGrphcs[i] = onBGrphcs;
-                i++;
+                spcfMbGrphcs.add(onBGrphcs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return spcfMbGrphcs;
     }
-    public String[] getSpecificFormFactor(Connection con, String type){
+    public ArrayList<String> getSpecificFormFactor(Connection con, String type){
         try {
+            spcfFormFactor.clear();
             Statement st = con.createStatement();
             String queri = "select formfactor from " + type + " as formfactor";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 String formFactor = rs.getString("formfactor");
-                spcfFormFactor[i] = formFactor;
-                i++;
+                spcfFormFactor.add(formFactor);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return spcfFormFactor;
     }
-    public String[] getComponentKind(Connection con){
+    public ArrayList<String> getComponentKind(Connection con){
         try {
+            listOfNames.clear();
             Statement st = con.createStatement();
             String queri = "select kind from component as kind";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
-                String componentlKind = rs.getString("kind");
-                listOfNames[i] = componentlKind;
-                i++;
+                String componentKind = rs.getString("kind");
+                listOfNames.add(componentKind);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return listOfNames;
     }
-    public double[] getComponentPrice(Connection con){
+    public ArrayList<Double> getComponentPrice(Connection con){
         try {
+            listOfPrices.clear();
             Statement st = con.createStatement();
             String queri = "select price from component as price";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 double componentPrice = rs.getDouble("price");
-                listOfPrices[i] = componentPrice;
-                i++;
+                listOfPrices.add(componentPrice);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return listOfPrices;
     }
-    public int[] getComponentStock(Connection con){
+    public ArrayList<Integer> getComponentStock(Connection con){
         try {
+            listOfCurrentStock.clear();
             Statement st = con.createStatement();
             String queri = "select stock from component as stock";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 int currentStock = rs.getInt("stock");
-                listOfCurrentStock[i] = currentStock;
-                i++;
+                listOfCurrentStock.add(currentStock);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return listOfCurrentStock;
     }
-    public int[] getComponentMinStock(Connection con){
+    public ArrayList<Integer> getComponentMinStock(Connection con){
         try {
+            listOfMinStock.clear();
             Statement st = con.createStatement();
             String queri = "select minimumstock from component as minimumstock";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 int componentMinStock = rs.getInt("minimumstock");
-                listOfMinStock[i] = componentMinStock;
-                i++;
+                listOfMinStock.add(componentMinStock);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }return listOfMinStock;
     }
-    public int[] getComponentPrefStock(Connection con){
+    public ArrayList<Integer> getComponentPrefStock(Connection con){
         try {
+            listOfPrefStock.clear();
             Statement st = con.createStatement();
             String queri = "select preferedstock from component as prefstock";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 int componentPrefStock = rs.getInt("preferedstock");
-                listOfPrefStock[i] = componentPrefStock;
-                i++;
+                listOfPrefStock.add(componentPrefStock);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -246,14 +235,13 @@ public class DatabaseProject extends Application {
     }
     public ArrayList<String> getSystemsInStock(Connection con){
         try {
+            listOfSystemsInStock.clear();
             Statement st = con.createStatement();
             String queri = "select systemname from computersystem as systemname";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 String sysIntStock = rs.getString("systemname");
-                listOfSystemsInStock.add(i, sysIntStock);
-                i++;
+                listOfSystemsInStock.add(sysIntStock);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -265,11 +253,9 @@ public class DatabaseProject extends Application {
             Statement st = con.createStatement();
             String queri = "select componentname as componentname from contains where computersystemname ='"+sysName+"'";
             ResultSet rs = st.executeQuery(queri);
-            int i=0;
             while (rs.next()) {
                 String sysComponents = rs.getString("componentname");
-                listOfSysComponents.add(i, sysComponents);
-                i++;
+                listOfSysComponents.add(sysComponents);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -288,6 +274,20 @@ public class DatabaseProject extends Application {
         } catch (SQLException e) {
             e.printStackTrace();
         }return i;
+    }
+    public double getSystemPrice(Connection con, String compName){
+        try {
+            Statement st = con.createStatement();
+            String queri = "select price as price from component where name='" + compName + "'";
+            ResultSet rs = st.executeQuery(queri);
+            _price = 0;
+            while (rs.next()) {
+                double componentPrice = rs.getDouble("price");
+                _price += componentPrice;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return _price;
     }
     /**
      * @param args the command line arguments
