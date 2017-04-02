@@ -45,6 +45,8 @@ public class FXMLDocumentController implements Initializable{
     private ArrayList<String> listOfSystems = new ArrayList<>();
     private ArrayList<String> listOfSysComponents = new ArrayList<>();
     private ArrayList<Integer> sysChecker = new ArrayList<>();
+    private ArrayList<String> listOfSystemsPurchase = new ArrayList<>();
+    private ArrayList<String> listOfSystemNamesPurchase = new ArrayList<>();
         
     
     
@@ -78,12 +80,6 @@ public class FXMLDocumentController implements Initializable{
     }
     
 
-    
-    @FXML
-    private Label stockPageLabel;
-    
-    @FXML
-    private Label sysInStockLabel1;
 
     @FXML
     private TextArea stockPageName;
@@ -105,9 +101,6 @@ public class FXMLDocumentController implements Initializable{
 
     @FXML
     private TextArea stockPageKind;
-
-    @FXML
-    private Label stockPageLabel1;
 
     @FXML
     private TextArea detailsNameTA;
@@ -152,9 +145,6 @@ public class FXMLDocumentController implements Initializable{
     private TextArea detailsPriceTA;
 
     @FXML
-    private Label sysInStockLabel;
-
-    @FXML
     private TextArea sysInStockPageTA;
     
     @FXML
@@ -164,10 +154,13 @@ public class FXMLDocumentController implements Initializable{
     private Button sysInStockButton;
 
     @FXML
-    private Label salesPageLabel;
-
-    @FXML
     private TextArea salesPageTA;
+    
+    @FXML
+    private TextArea salesPageQuantityTA;
+    
+    @FXML
+    private TextArea salesPagePriceTA;
 
     @FXML
     private Button salePageButton;
@@ -209,7 +202,16 @@ public class FXMLDocumentController implements Initializable{
 
     @FXML
     void fetchSales(ActionEvent event) {
-
+        String sysInStock = "";
+        listOfSystemsPurchase = dbProject.getSystemsInStock(con);
+        for(String s : listOfSystemsPurchase){
+            sysInStock += s + "\n";
+        }salesPageTA.setText(sysInStock);
+        
+        String amountsInStock = "";
+        listOfSystemNamesPurchase = dbProject.getSystemsInStock(con);
+        for(String s : listOfSystemNamesPurchase)
+            dbProject.getAmountOfSystems(con, s)
     }
 
     @FXML

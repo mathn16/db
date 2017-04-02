@@ -275,25 +275,6 @@ public class DatabaseProject extends Application {
             e.printStackTrace();
         }return listOfSysComponents;
     }
-    public int[] getAmountOfSystems(Connection con, String sysName){
-        try {
-            Statement st = con.createStatement();
-            String queri = "select componentname as componentname from contains where computersystemname ='"+sysName+"'";
-            ResultSet rs = st.executeQuery(queri);
-            int i=0;
-            int minStock = 0;
-            while (rs.next()) {
-                String componentName = rs.getString("componentname");
-                listOfSysComponents.add(i, componentName);
-                for(int n = 0; n <listOfSysComponents.size(); n++){
-                    
-                }
-                i++;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }return amountOfSys;
-    }
     public int getComponentStock(Connection con, String compName){
         int i = 0;
         try {
