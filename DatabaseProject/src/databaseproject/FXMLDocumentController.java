@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,15 +13,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 
 public class FXMLDocumentController implements Initializable{
     
     private Connection con;
-    private DatabaseProject dbProject = new DatabaseProject();;
+    private DatabaseProject dbProject = new DatabaseProject();
     
     private String nameOfComponents;
     private String kindOfComponents;
@@ -49,6 +52,9 @@ public class FXMLDocumentController implements Initializable{
     private ArrayList<String> listOfSystemNamesPurchase = new ArrayList<>();
     private ArrayList<String> listOfSysComponentsPurchase = new ArrayList<>();
     private ArrayList<String> listOfSysPrice = new ArrayList<>();
+    private ArrayList<String> comboBoxRamList = new ArrayList<>();
+    private ArrayList<String> listOfSys = new ArrayList<>();
+    private HashMap<String, Integer> restockMap = new HashMap<>();
         
     
     
@@ -63,9 +69,24 @@ public class FXMLDocumentController implements Initializable{
         sysInStockPageTA.setEditable(false);
         sysInStockPageTA1.setEditable(false);
         salesPageTA.setEditable(false);
+        detailsNameTA.setEditable(false);
+        detailsBusSTA.setEditable(false);
+        detailsSocket.setEditable(false);
+        detailsRAMTA.setEditable(false);
+        detailsFormTA.setEditable(false);
+        detailsMBGraphics.setEditable(false);
+        detailsPriceTA.setEditable(false);
+        salesPageQuantityTA.setEditable(false);
+        salesPagePriceTA.setEditable(false);
+        salesPageLastTA.setEditable(false);
+        ramCB.setEditable(false);
+        cpuCB.setEditable(false);
+        mbCB.setEditable(false);
+        gcCB.setEditable(false);
+        ccCB.setEditable(false);
+        systemCB.setEditable(false);
+        restockTA.setEditable(false);
         
-
-
         String url = "jdbc:postgresql://localhost:5432/dbProject";
         String user = "postgres";
         String password = "123";
@@ -79,10 +100,42 @@ public class FXMLDocumentController implements Initializable{
                 Logger lgr = Logger.getLogger(DatabaseProject.class.getName());
                 lgr.log(Level.WARNING, ex.getMessage(), ex);
         }
+        ccCB.getItems().addAll(dbProject.getSpecificComponentName(con, "computercase"));
+        gcCB.getItems().addAll(dbProject.getSpecificComponentName(con, "graphicscard"));
+        ramCB.getItems().addAll(dbProject.getSpecificComponentName(con, "ram"));
+        cpuCB.getItems().addAll(dbProject.getSpecificComponentName(con, "cpu"));
+        mbCB.getItems().addAll(dbProject.getSpecificComponentName(con, "mainboard"));
+        systemCB.getItems().addAll(dbProject.getSystemsInStock(con));
+        sysQuantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
+        ramQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
+        cpuQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
+        mbQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
+        gcQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
+        cCQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
     }
     
-
-
+    
+    @FXML
+    private TextArea restockTA;
+    
+    @FXML
+    private ComboBox ccCB;
+    
+    @FXML
+    private ComboBox ramCB;
+    
+    @FXML
+    private ComboBox cpuCB;
+    
+    @FXML
+    private ComboBox mbCB;
+    
+    @FXML
+    private ComboBox gcCB;
+    
+    @FXML
+    private ComboBox systemCB;
+    
     @FXML
     private TextArea stockPageName;
 
@@ -166,6 +219,27 @@ public class FXMLDocumentController implements Initializable{
 
     @FXML
     private Button salePageButton;
+    
+    @FXML
+    private TextArea salesPageLastTA;
+    
+    @FXML
+    private Spinner<Integer> sysQuantitySpinner;
+    
+    @FXML
+    private Spinner<Integer> ramQSpin;
+    
+    @FXML
+    private Spinner<Integer> cpuQSpin;
+    
+    @FXML
+    private Spinner<Integer> mbQSpin;
+    
+    @FXML
+    private Spinner<Integer> gcQSpin;
+    
+    @FXML
+    private Spinner<Integer> cCQSpin;
 
     
     @FXML
@@ -444,5 +518,75 @@ public class FXMLDocumentController implements Initializable{
             detailsSocket.setText("N/A");
             detailsBusSTA.setText("N/A");
         }
-    }               //done
+    }
+    
+    @FXML
+    void completePurchases(ActionEvent event) {
+        int compSales = 0;
+        int sysSales = 0;
+        String soldOut = "";
+        boolean compInStock = true;
+        if(systemCB == null && ramCB == null && cpuCB == null && mbCB == null && gcCB == null && ccCB == null){
+            salesPageLastTA.setText("No items where selected.\nTo order - Select a component or system, and press \"Buy.\"");
+        }else{
+            if(systemCB.getSelectionModel().getSelectedIndex() != -1){
+                listOfSys = dbProject.getSystemComponents(con, (String)systemCB.getSelectionModel().getSelectedItem());
+                for(String s : listOfSys){
+                    if(dbProject.getComponentStock(con, s) < sysQuantitySpinner.getValue()){
+                        compInStock = false;
+                        salesPageLastTA.setText("Insufficient components for chosen system(s).");
+                    }
+                }if(compInStock == true){
+                    for(String s : listOfSys){
+                        dbProject.sellComponent(con, sysQuantitySpinner.getValue() ,s);
+                    }
+                }sysSales++;
+            }if(ramCB.getSelectionModel().getSelectedIndex() != -1){
+                if(dbProject.getComponentStock(con, (String)ramCB.getSelectionModel().getSelectedItem()) > 0){
+                    dbProject.sellComponent(con, ramQSpin.getValue() ,(String)ramCB.getSelectionModel().getSelectedItem());
+                    compSales++;
+                }else{
+                    soldOut += (String)ramCB.getSelectionModel().getSelectedItem() + " is sold out, or not in the selected quantity \nCheck details for more info.";
+                }
+            }if(cpuCB.getSelectionModel().getSelectedIndex() != -1){
+                if(dbProject.getComponentStock(con, (String)cpuCB.getSelectionModel().getSelectedItem()) > 0){
+                dbProject.sellComponent(con, cpuQSpin.getValue() ,(String)cpuCB.getSelectionModel().getSelectedItem());
+                compSales++;
+                }else{
+                    soldOut += (String)cpuCB.getSelectionModel().getSelectedItem() + "is sold out \n";
+                }
+            }if(mbCB.getSelectionModel().getSelectedIndex() != -1){
+                if(dbProject.getComponentStock(con, (String)mbCB.getSelectionModel().getSelectedItem()) > 0){
+                dbProject.sellComponent(con, mbQSpin.getValue() ,(String)mbCB.getSelectionModel().getSelectedItem());
+                compSales++;
+                }else{
+                    soldOut += (String)mbCB.getSelectionModel().getSelectedItem() + "is sold out \n";
+                }
+            }if(gcCB.getSelectionModel().getSelectedIndex() != -1){
+                if(dbProject.getComponentStock(con, (String)gcCB.getSelectionModel().getSelectedItem()) > 0){
+                dbProject.sellComponent(con, gcQSpin.getValue() ,(String)gcCB.getSelectionModel().getSelectedItem());
+                compSales++;
+                }else{
+                    soldOut += (String)gcCB.getSelectionModel().getSelectedItem() + "is sold out \n";
+                }
+            }if(ccCB.getSelectionModel().getSelectedIndex() != -1){
+                if(dbProject.getComponentStock(con, (String)ccCB.getSelectionModel().getSelectedItem()) > 0){
+                dbProject.sellComponent(con, cCQSpin.getValue() ,(String)ccCB.getSelectionModel().getSelectedItem());
+                compSales++;
+                }else{
+                    soldOut += (String)ccCB.getSelectionModel().getSelectedItem() + "is sold out \n";
+                }
+            }salesPageLastTA.setText("You have purchased "+ compSales +" components.\nAnd " + sysSales + " Computersystems.");
+        }
+    }
+    
+    @FXML
+    void fetchRestock(ActionEvent event) {
+        restockMap = dbProject.getRestockList(con);
+        for (HashMap.Entry<String, Integer> entry : restockMap.entrySet()){
+            restockTA.setText("Component: " + entry.getKey() + " needs retocking of: " + entry.getValue() + ".");
+        }if(restockTA.getText().isEmpty()){
+            restockTA.setText("Nothing needs restocking at the moment.");
+        }
+    }
 }

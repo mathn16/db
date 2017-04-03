@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -38,6 +39,7 @@ public class DatabaseProject extends Application {
     private ArrayList<String> listOfSystemsInStock = new ArrayList<>();
     private ArrayList<String> listOfSysComponents = new ArrayList<>();
     private ArrayList<Double> listOfSystemPrices = new ArrayList<>();
+    private HashMap<String, Integer> restockList = new HashMap<>();
     private double _price;
     
     @Override
@@ -115,7 +117,7 @@ public class DatabaseProject extends Application {
             ResultSet rs = st.executeQuery(queri);
             while (rs.next()) {
                 double scpfComponentPrice = rs.getDouble("price");
-                spcfPrice.add(scpfComponentPrice);
+                spcfPrice.add(scpfComponentPrice * 1.3);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -271,7 +273,7 @@ public class DatabaseProject extends Application {
                 int currentStock = rs.getInt("stock");
                 i = currentStock;
             }
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             e.printStackTrace();
         }return i;
     }
@@ -285,10 +287,35 @@ public class DatabaseProject extends Application {
                 double componentPrice = rs.getDouble("price");
                 _price += componentPrice;
             }
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             e.printStackTrace();
         }return _price;
     }
+    public void sellComponent(Connection con, int quantity, String compName){
+        try {
+            Statement st = con.createStatement();
+            String queri = "update component set stock = stock - "+ quantity +" where name ='" + compName + "'";
+            st.executeUpdate(queri);
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public HashMap<String, Integer> getRestockList(Connection con){
+        try {
+            listOfSysComponents.clear();
+            Statement st = con.createStatement();
+            String queri = "select preferedstock - stock as needed, name from component where stock < minimumstock";
+            ResultSet rs = st.executeQuery(queri);
+            while (rs.next()) {
+                String lowComps = rs.getString("name");
+                int compsNeeded = rs.getInt("needed");
+                restockList.put(lowComps, compsNeeded);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }return restockList;
+    }
+    
     /**
      * @param args the command line arguments
      */
