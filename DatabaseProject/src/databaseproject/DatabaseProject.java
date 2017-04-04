@@ -279,7 +279,6 @@ public class DatabaseProject extends Application {
     }
     public double getSystemPrice(Connection con, String compName){
         try {
-            System.out.println(compName);
             Statement st = con.createStatement();
             String queri = "select price as price from component where name='" + compName + "'";
             ResultSet rs = st.executeQuery(queri);
