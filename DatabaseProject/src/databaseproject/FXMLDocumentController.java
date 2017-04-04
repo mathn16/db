@@ -31,6 +31,7 @@ public class FXMLDocumentController implements Initializable{
     private String currentStockOfComponents;
     private String minStockOfComponents;
     private String prefStockOfComponents;
+    private int firsttime = 0;
     
     private ArrayList<String> listOfNames = new ArrayList<>();
     private ArrayList<String> listOfKinds = new ArrayList<>();
@@ -106,12 +107,12 @@ public class FXMLDocumentController implements Initializable{
         cpuCB.getItems().addAll(dbProject.getSpecificComponentName(con, "cpu"));
         mbCB.getItems().addAll(dbProject.getSpecificComponentName(con, "mainboard"));
         systemCB.getItems().addAll(dbProject.getSystemsInStock(con));
-        sysQuantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
-        ramQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
-        cpuQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
-        mbQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
-        gcQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
-        cCQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0,50,0));
+        sysQuantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,50,1));
+        ramQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,50,1));
+        cpuQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,50,1));
+        mbQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,50,1));
+        gcQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,50,1));
+        cCQSpin.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,50,1));
     }
     
     
@@ -289,6 +290,10 @@ public class FXMLDocumentController implements Initializable{
 
     @FXML
     void fetchSales(ActionEvent event) {
+        if(firsttime == 0){
+            salesPageTA.setText("Welcome to the salespage!\nTo buy a piece of equipment/system, simply select the system/component\n Set the amount, and press buy.");
+            firsttime = 1;
+        }
         String sysInStock = "";
         listOfSystemsPurchase = dbProject.getSystemsInStock(con);
         for(String s : listOfSystemsPurchase){
@@ -584,7 +589,7 @@ public class FXMLDocumentController implements Initializable{
     void fetchRestock(ActionEvent event) {
         restockMap = dbProject.getRestockList(con);
         for (HashMap.Entry<String, Integer> entry : restockMap.entrySet()){
-            restockTA.setText("Component: " + entry.getKey() + " needs retocking of: " + entry.getValue() + ".");
+            restockTA.setText("Component: " + entry.getKey() + " needs retocking of: " + entry.getValue() + " components.");
         }if(restockTA.getText().isEmpty()){
             restockTA.setText("Nothing needs restocking at the moment.");
         }
