@@ -279,6 +279,7 @@ public class DatabaseProject extends Application {
     }
     public double getSystemPrice(Connection con, String compName){
         try {
+            System.out.println(compName);
             Statement st = con.createStatement();
             String queri = "select price as price from component where name='" + compName + "'";
             ResultSet rs = st.executeQuery(queri);
@@ -286,6 +287,22 @@ public class DatabaseProject extends Application {
             while (rs.next()) {
                 double componentPrice = rs.getDouble("price");
                 _price += componentPrice;
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }return _price;
+    }
+    public double getSystemNamePrice(Connection con, ArrayList<String> system){
+        try {
+            _price = 0;
+            for(String s : system){
+                Statement st = con.createStatement();
+                String queri = "select price as price from component where name='" + s + "'";
+                ResultSet rs = st.executeQuery(queri);
+                while (rs.next()) {
+                    double componentPrice = rs.getDouble("price");
+                    _price += componentPrice;
+                }
             }
         }catch (SQLException e) {
             e.printStackTrace();

@@ -582,7 +582,9 @@ public class FXMLDocumentController implements Initializable{
                     soldOut += (String)ccCB.getSelectionModel().getSelectedItem() + "is sold out \n";
                 }
             }if(sysQuantitySpinner.getValue() != 1){
-                salesPageLastTA.setText("You have purchased "+ compSales +" components.\nAnd " + sysSales + " Computersystems.\nThe price of the computersystem is: " + dbProject.getSystemPrice(con, (String)systemCB.getSelectionModel().getSelectedItem()) * (sysQuantitySpinner.getValue()) * (double)((sysQuantitySpinner.getValue()*2)/100+1) + " DKKR.");
+                salesPageLastTA.setText("You have purchased "+ compSales +" components.\nAnd " + sysQuantitySpinner.getValue() + " Computersystems.\nThe price of the computersystem is: " 
+                        + (1.3 * dbProject.getSystemNamePrice(con, dbProject.getSystemComponents(con, (String)systemCB.getSelectionModel().getSelectedItem())) * (sysQuantitySpinner.getValue()) * 
+                                (double)(1-((sysQuantitySpinner.getValue()*2)/100))) + " DKKR.");
             }else if(sysQuantitySpinner.getValue() == 1){
                 salesPageLastTA.setText("You have purchased "+ compSales +" components.\nAnd " + sysSales + " Computersystems.\nThe price of the computersystem is: " + dbProject.getSystemPrice(con, (String)systemCB.getSelectionModel().getSelectedItem()) + " DKKR.");
             }
